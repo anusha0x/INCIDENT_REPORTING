@@ -1,3 +1,4 @@
+import React from 'react';
 import CitizenView from "./pages/CitizenView";
 import Dashboard from "./pages/Dashboard";
 import { useState } from "react";
