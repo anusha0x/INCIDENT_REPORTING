@@ -1,58 +1,82 @@
 import "../App.css";
+import { useState } from "react";
 
 function CitizenView() {
+  const [incidentType, setIncidentType] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const getGuidance = () => {
+    switch (incidentType) {
+      case "Accident":
+        return "Turn on hazard lights, avoid moving injured people, apply pressure to bleeding, and stay visible.";
+      case "Medical":
+        return "Keep the person comfortable, do not give food or water, and monitor breathing.";
+      case "Fire":
+        return "Move away from smoke, do not use elevators, cover mouth with cloth, and follow exits.";
+      default:
+        return "Stay in a safe place, keep your phone reachable, and wait for responders.";
+    }
+  };
+
   return (
     <div className="hero">
       <div className="overlay">
-        <h1 style={{ fontSize: "42px", marginBottom: "10px" }}>
-          Report Road Incident
-        </h1>
+        {!submitted ? (
+          <>
+            <h1 className="title">Help is on the way</h1>
+            <p className="subtitle">
+              Take a deep breath. Report the incident and we will alert responders immediately.
+            </p>
 
-        <p style={{ maxWidth: "500px", marginBottom: "30px" }}>
-          Quickly report accidents or emergencies. Your location is captured automatically.
-        </p>
+            <form
+              className="incident-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setSubmitted(true);
+              }}
+            >
+              <select
+                required
+                value={incidentType}
+                onChange={(e) => setIncidentType(e.target.value)}
+              >
+                <option value="">Select Incident Type</option>
+                <option>Accident</option>
+                <option>Medical</option>
+                <option>Fire</option>
+                <option>Other</option>
+              </select>
 
-        <form style={{ maxWidth: "400px" }}>
-          <select required style={inputStyle}>
-            <option value="">Select Incident Type</option>
-            <option>Accident</option>
-            <option>Medical</option>
-            <option>Fire</option>
-            <option>Other</option>
-          </select>
+              <textarea
+                placeholder="Describe what happened..."
+                rows="4"
+                required
+              />
 
-          <textarea
-            placeholder="Describe what happened..."
-            rows="4"
-            required
-            style={inputStyle}
-          />
+              <button type="submit">Submit Report</button>
+            </form>
+          </>
+        ) : (
+          <div className="guide-box">
+            <h2>Stay Calm. Help Has Been Notified 🚑</h2>
 
-          <button style={buttonStyle}>Submit Report</button>
-        </form>
+            <ul className="status-list">
+              <li>✔ Your location has been shared</li>
+              <li>✔ Emergency responders alerted</li>
+              <li>✔ Keep your phone reachable</li>
+            </ul>
+
+            <h3>What to do right now:</h3>
+            <p className="guidance-text">{getGuidance()}</p>
+
+            <div className="breathing-tip">
+              <strong>Calm Tip:</strong> Breathe in for 4 seconds, hold for 4, exhale for 6.
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "12px",
-  marginBottom: "15px",
-  borderRadius: "6px",
-  border: "none",
-  fontSize: "14px",
-};
-
-const buttonStyle = {
-  width: "100%",
-  padding: "12px",
-  background: "#e63946",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  fontSize: "16px",
-  cursor: "pointer",
-};
 
 export default CitizenView;
