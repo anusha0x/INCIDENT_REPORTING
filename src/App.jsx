@@ -7,14 +7,11 @@ function App() {
 
   return (
     <>
-      <div style={{ position: "fixed", top: 10, right: 10, zIndex: 999 }}>
-        <button onClick={() => setView("citizen")}>Citizen</button>
-        <button onClick={() => setView("dashboard")} style={{ marginLeft: 10 }}>
-          Responder
-        </button>
-      </div>
-
-      {view === "citizen" ? <CitizenView /> : <Dashboard />}
+      {view === "citizen" ? (
+        <CitizenView setView={setView} />
+      ) : (
+        <Dashboard setView={setView} />
+      )}
     </>
   );
 }

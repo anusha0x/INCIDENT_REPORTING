@@ -1,7 +1,7 @@
 import "../App.css";
 import { useState } from "react";
 
-function CitizenView() {
+function CitizenView({setView}) {
   const [incidentType, setIncidentType] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -12,7 +12,7 @@ function CitizenView() {
       case "Medical":
         return "Keep the person comfortable, do not give food or water, and monitor breathing.";
       case "Fire":
-        return "Move away from smoke, do not use elevators, cover mouth with cloth, and follow exits.";
+        return "Move away from smoke, do not use elevators, cover your mouth with cloth, and follow emergency exits.";
       default:
         return "Stay in a safe place, keep your phone reachable, and wait for responders.";
     }
@@ -20,41 +20,49 @@ function CitizenView() {
 
   return (
     <div className="hero">
+      {/* Role Toggle */}
+      <div className="role-toggle">
+        <button className="active">Citizen</button>
+        <button>Responder</button>
+      </div>
+
       <div className="overlay">
         {!submitted ? (
           <>
             <h1 className="title">Help is on the way</h1>
             <p className="subtitle">
-              Take a deep breath. Report the incident and we will alert responders immediately.
+              Take a deep breath. You are not alone — responders are being notified immediately.
             </p>
 
-            <form
-              className="incident-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSubmitted(true);
-              }}
-            >
-              <select
-                required
-                value={incidentType}
-                onChange={(e) => setIncidentType(e.target.value)}
+            <div className="form-card">
+              <form
+                className="incident-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setSubmitted(true);
+                }}
               >
-                <option value="">Select Incident Type</option>
-                <option>Accident</option>
-                <option>Medical</option>
-                <option>Fire</option>
-                <option>Other</option>
-              </select>
+                <select
+                  required
+                  value={incidentType}
+                  onChange={(e) => setIncidentType(e.target.value)}
+                >
+                  <option value="">Select Incident Type</option>
+                  <option>Accident</option>
+                  <option>Medical</option>
+                  <option>Fire</option>
+                  <option>Other</option>
+                </select>
 
-              <textarea
-                placeholder="Describe what happened..."
-                rows="4"
-                required
-              />
+                <textarea
+                  placeholder="Describe what happened..."
+                  rows="4"
+                  required
+                />
 
-              <button type="submit">Submit Report</button>
-            </form>
+                <button type="submit">Submit Report</button>
+              </form>
+            </div>
           </>
         ) : (
           <div className="guide-box">
