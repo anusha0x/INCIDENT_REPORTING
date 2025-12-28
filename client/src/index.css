@@ -1,73 +1,43 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+body, html, #root {
+  margin: 0; padding: 0; height: 100%; width: 100%;
+  overflow: hidden; font-family: 'Inter', sans-serif;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Map background */
+.leaflet-container { height: 100vh !important; width: 100vw !important; z-index: 0; }
+
+/* Citizen UI: Floating Card */
+.action-card {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 90%; max-width: 400px; z-index: 1000;
+  background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 24px;
+  padding: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+.sos-button {
+  width: 100%; padding: 16px; background: #e63946; color: white;
+  border: none; border-radius: 12px; font-weight: bold; font-size: 18px;
+  cursor: pointer; margin-top: 10px;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Responder UI: Sidebar Layout */
+.dashboard-container { display: flex; height: 100vh; width: 100vw; background: #111827; }
+.sidebar {
+  width: 350px; background: #1f2937; color: white;
+  display: flex; flex-direction: column; z-index: 1001; overflow-y: auto;
 }
+.sidebar-header { padding: 20px; background: #111827; border-bottom: 1px solid #374151; }
+.incident-card {
+  padding: 15px; margin: 10px; background: #374151;
+  border-radius: 10px; border-left: 4px solid #ef4444;
+}
+.map-area { flex-grow: 1; position: relative; }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-.leaflet-container {
-  height: 100vh;
-  width: 100%;
+/* Global components */
+.styled-select, .styled-textarea {
+  width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px;
+  border: 1px solid #ddd; font-size: 15px; box-sizing: border-box;
 }

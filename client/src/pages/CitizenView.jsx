@@ -1,111 +1,47 @@
-import React from 'react';
-import "../App.css";
-import { useState, useEffect } from "react";
-// Import Map components (Requires: npm install react-leaflet leaflet)
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-// Helper component to center map when location is found
-function ChangeView({ center }) {
+let DefaultIcon = L.icon({ iconUrl: markerIcon, shadowUrl: markerShadow, iconSize: [25, 41], iconAnchor: [12, 41] });
+L.Marker.prototype.options.icon = DefaultIcon;
+
+function MapRefresher({ coords }) {
   const map = useMap();
-  map.setView(center, 15);
+  useEffect(() => { map.setView(coords, 16); }, [coords, map]);
   return null;
 }
 
-function CitizenView() {
-  const [incidentType, setIncidentType] = useState("");
-  const [description, setDescription] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  
-  // State to "catch" the location (Engineering Quality)
-  const [location, setLocation] = useState({ lat: 23.2599, lng: 77.4126 }); // Default Bhopal
-  const [hasLocation, setHasLocation] = useState(false);
+const CitizenView = () => {
+  const [position, setPosition] = useState([23.2599, 77.4126]);
+  const [type, setType] = useState("");
 
-  // Automatically catch location on load (Requirement #2)
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          setHasLocation(true);
-        },
-        (error) => console.error("Location error:", error),
-        { enableHighAccuracy: true }
-      );
-    }
+    navigator.geolocation.getCurrentPosition((pos) => setPosition([pos.coords.latitude, pos.coords.longitude]));
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // This is where you will later call your API in index.js
-    console.log("Reporting:", { incidentType, description, location });
-    setSubmitted(true);
-  };
-
-  const getGuidance = () => {
-    switch (incidentType) {
-      case "Accident": return "Turn on hazard lights, apply pressure to bleeding, and stay visible.";
-      case "Medical": return "Keep the person comfortable and monitor breathing. Do not give water.";
-      case "Fire": return "Move away from smoke, cover mouth with cloth, and follow exits.";
-      default: return "Stay in a safe place and keep your phone reachable.";
-    }
-  };
-
   return (
-    <div className="hero">
-      <div className="overlay">
-        {!submitted ? (
-          <>
-            <h1 className="title">Emergency Assistance</h1>
-            
-            {/* The Map: Shows 'Reliability Thinking' for judges */}
-            <div style={{ height: "250px", width: "100%", marginBottom: "20px", borderRadius: "10px", overflow: "hidden" }}>
-              <MapContainer center={[location.lat, location.lng]} zoom={13} style={{ height: "100%", width: "100%" }}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {hasLocation && <Marker position={[location.lat, location.lng]} />}
-                <ChangeView center={[location.lat, location.lng]} />
-              </MapContainer>
-            </div>
+    <div style={{ position: 'relative', height: '100vh' }}>
+      <MapContainer center={position} zoom={13} zoomControl={false}>
+        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+        <Marker position={position} />
+        <MapRefresher coords={position} />
+      </MapContainer>
 
-            <form className="incident-form" onSubmit={handleSubmit}>
-              <select required value={incidentType} onChange={(e) => setIncidentType(e.target.value)}>
-                <option value="">Select Incident Type</option>
-                <option>Accident</option>
-                <option>Medical</option>
-                <option>Fire</option>
-                <option>Other</option>
-              </select>
-
-              <textarea 
-                placeholder="Describe the emergency..." 
-                rows="3" 
-                required 
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-
-              <button type="submit" className="submit-btn">
-                {hasLocation ? "Send Help to My Location" : "Detecting Location..."}
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className="guide-box">
-            <h2>Help is on the way! 🚑</h2>
-            <ul className="status-list">
-              <li>✔ Coordinates {location.lat.toFixed(4)}, {location.lng.toFixed(4)} shared</li>
-              <li>✔ Responders notified in 5km radius</li>
-            </ul>
-            <h3>Immediate Steps:</h3>
-            <p className="guidance-text">{getGuidance()}</p>
-          </div>
-        )}
+      <div className="action-card">
+        <h2>Rakshak SOS</h2>
+        <select className="styled-select" value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="">Select Emergency...</option>
+          <option value="Fire">🔥 Fire</option>
+          <option value="Medical">🚑 Medical</option>
+          <option value="Crime">🚨 Crime</option>
+        </select>
+        <textarea className="styled-textarea" placeholder="Describe the situation..." rows="2" />
+        <button className="sos-button" onClick={() => alert("SOS Sent!")}>SEND HELP</button>
       </div>
     </div>
   );
-}
-
+};
 export default CitizenView;

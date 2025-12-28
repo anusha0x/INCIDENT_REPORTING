@@ -1,76 +1,32 @@
 import React from 'react';
-import "../App.css";
-import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
-const incidents = [
-  {
-    id: 1,
-    type: "Accident",
-    lat: 26.2183,
-    lng: 78.1828,
-    location: "NH-44, Gwalior",
-    status: "Reported",
-  },
-  {
-    id: 2,
-    type: "Medical",
-    lat: 26.225,
-    lng: 78.170,
-    location: "City Center",
-    status: "Responding",
-  },
-  {
-    id: 3,
-    type: "Fire",
-    lat: 26.230,
-    lng: 78.190,
-    location: "Industrial Area",
-    status: "Resolved",
-  },
-];
-
-function Dashboard() {
-  useEffect(() => {
-    const map = new window.google.maps.Map(document.getElementById("map"), {
-      center: { lat: 26.2183, lng: 78.1828 },
-      zoom: 13,
-    });
-
-    incidents.forEach((incident) => {
-      new window.google.maps.Marker({
-        position: { lat: incident.lat, lng: incident.lng },
-        map,
-        title: `${incident.type} - ${incident.status}`,
-      });
-    });
-  }, []);
+const Dashboard = () => {
+  const incidents = [
+    { id: 1, type: "🔥 Fire", loc: [23.2599, 77.4126], desc: "Building A - Floor 3" },
+    { id: 2, type: "🚑 Medical", loc: [23.2650, 77.4200], desc: "Road Accident" }
+  ];
 
   return (
-    <div className="dashboard">
-      <h1>🚨 Responder Dashboard</h1>
-      <p className="subtitle">Live reported incidents</p>
-
-      <div className="dashboard-grid">
-        {/* Incident List */}
-        <div className="incident-list">
-          {incidents.map((i) => (
-            <div key={i.id} className="incident-card">
-              <div>
-                <h3>{i.type}</h3>
-                <p>{i.location}</p>
-              </div>
-              <span className={`status ${i.status.toLowerCase()}`}>
-                {i.status}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Map */}
-        <div id="map" className="map-box"></div>
+    <div className="dashboard-container">
+      <div className="sidebar">
+        <div className="sidebar-header"><h2>Rakshak Hub</h2></div>
+        {incidents.map(inc => (
+          <div key={inc.id} className="incident-card">
+            <h4>{inc.type}</h4>
+            <p>{inc.desc}</p>
+            <button style={{width:'100%', marginTop:'10px', background:'#3b82f6', color:'white', border:'none', borderRadius:'5px', padding:'5px'}}>Dispatch</button>
+          </div>
+        ))}
+      </div>
+      <div className="map-area">
+        <MapContainer center={[23.2599, 77.4126]} zoom={14} style={{height:'100%'}}>
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+          {incidents.map(inc => <Marker key={inc.id} position={inc.loc}><Popup>{inc.type}</Popup></Marker>)}
+        </MapContainer>
       </div>
     </div>
   );
-}
-
+};
 export default Dashboard;
