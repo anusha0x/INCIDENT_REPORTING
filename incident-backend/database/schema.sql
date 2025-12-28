@@ -1,0 +1,46 @@
+
+
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  role VARCHAR(20) CHECK (role IN ('citizen', 'admin')) NOT NULL,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE incidents (
+  id SERIAL PRIMARY KEY,
+  type VARCHAR(50) NOT NULL,
+  description TEXT NOT NULL,
+  latitude DOUBLE PRECISION NOT NULL,
+  longitude DOUBLE PRECISION NOT NULL,
+  severity VARCHAR(10) CHECK (severity IN ('LOW', 'MEDIUM', 'HIGH')) NOT NULL,
+  status VARCHAR(20) CHECK (
+    status IN ('UNVERIFIED', 'VERIFIED', 'IN_PROGRESS', 'RESOLVED')
+  ) DEFAULT 'UNVERIFIED',
+  upvote_count INT DEFAULT 0,
+  created_by INT REFERENCES users(id) ON DELETE SET NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE admin_notes (
+  id SERIAL PRIMARY KEY,
+  incident_id INT REFERENCES incidents(id) ON DELETE CASCADE,
+  admin_id INT REFERENCES users(id) ON DELETE CASCADE,
+  note TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE upvotes (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  incident_id INT REFERENCES incidents(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (user_id, incident_id)
+);
