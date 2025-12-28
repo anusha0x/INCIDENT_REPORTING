@@ -2,8 +2,8 @@ import React from 'react';
 import "../App.css";
 import { useState, useEffect } from "react";
 // Import Map components (Requires: npm install react-leaflet leaflet)
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 // Helper component to center map when location is found
 function ChangeView({ center }) {
